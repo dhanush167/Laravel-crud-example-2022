@@ -1,5 +1,5 @@
 
-## About Laravel
+##  Laravel crud example
 ```
 
  php artisan make:model Biodata --all
