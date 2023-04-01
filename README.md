@@ -1,9 +1,10 @@
 
 ## About Laravel
+```
 
-<p>
-  php artisan make:model Biodata --all
-</p>
+ php artisan make:model Biodata --all
+ 
+```
 
 <p>pagination generate</p>
 
@@ -199,6 +200,10 @@ class BiodataController extends Controller
 
 
 ```
+
+<p>
+app/Services/BiodataService.php
+</p>
 
 ```php
 
