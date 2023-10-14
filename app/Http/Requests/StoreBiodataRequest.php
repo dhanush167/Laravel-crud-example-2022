@@ -25,9 +25,9 @@ class StoreBiodataRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'image'=>'required|image|max:2048'
+            'first_name'=>'required|max:255|string|min:3',
+            'last_name'=>'required|max:255|string|min:3',
+            'image'=>'required|mimes:svg,jpeg,png,jpg|image|max:2048'
         ];
     }
 }
