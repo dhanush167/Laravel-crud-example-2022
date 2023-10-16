@@ -39,4 +39,27 @@ class UpdateBiodataRequest extends FormRequest
 
 
     }
+
+    public function messages()
+    {
+        return [
+            'first_name.required' => 'First Name is required !',
+            'last_name.required' => 'Last Name is required !',
+            'image.required' => 'Image is required !'
+        ];
+    }
+
+    /**
+     *  Filters to be applied to the input.
+     *
+     * @return array
+     */
+    public function filters()
+    {
+        return [
+            'first_name' => 'trim|capitalize|escape',
+            'last_name' => 'trim|capitalize|escape'
+        ];
+    }
+
 }

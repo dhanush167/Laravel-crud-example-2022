@@ -5,6 +5,7 @@
            value="{{old('first_name', ($editing ? $biodata->first_name : ''))}}"
            name="first_name"
            class="form-control"
+           minlength="3"
            maxlength="255"
            placeholder="First Name">
     @if ($errors->has('first_name'))
@@ -17,6 +18,7 @@
            value="{{old('last_name', ($editing ? $biodata->last_name : ''))}}"
            name="last_name"
            class="form-control"
+           minlength="3"
            maxlength="255"
            placeholder="Last Name">
     @if ($errors->has('last_name'))
