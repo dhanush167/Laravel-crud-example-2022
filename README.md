@@ -22,7 +22,7 @@ php artisan vendor:publish --tag=laravel-pagination
 
 ```php
 
-  <?php
+<?php
 
 namespace App\Http\Requests;
 
@@ -49,19 +49,41 @@ class StoreBiodataRequest extends FormRequest
     public function rules()
     {
         return [
-                'first_name' => 'required|max:255|string|min:3',
-                'last_name' => 'required|max:255|string|min:3',
-                'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+            'first_name'=>'required|max:255|string|min:3',
+            'last_name'=>'required|max:255|string|min:3',
+            'image'=>'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'first_name.required' => 'First Name is required !',
+            'last_name.required' => 'Last Name is required !',
+            'image.required' => 'Image is required !'
+        ];
+    }
+
+    /**
+     *  Filters to be applied to the input.
+     *
+     * @return array
+     */
+    public function filters()
+    {
+        return [
+            'first_name' => 'trim|capitalize|escape',
+            'last_name' => 'trim|capitalize|escape'
         ];
     }
 }
+
 
 ```
 
 <p>update method validation file</p>
 
 ```php
-
 <?php
 
 namespace App\Http\Requests;
@@ -103,8 +125,30 @@ class UpdateBiodataRequest extends FormRequest
 
 
     }
-}
 
+    public function messages()
+    {
+        return [
+            'first_name.required' => 'First Name is required !',
+            'last_name.required' => 'Last Name is required !',
+            'image.required' => 'Image is required !'
+        ];
+    }
+
+    /**
+     *  Filters to be applied to the input.
+     *
+     * @return array
+     */
+    public function filters()
+    {
+        return [
+            'first_name' => 'trim|capitalize|escape',
+            'last_name' => 'trim|capitalize|escape'
+        ];
+    }
+
+}
 
 
 ```
