@@ -32,32 +32,32 @@
                 <th>Last Name</th>
                 <th>image</th>
                 <th>Action</th>
-
-
-
-            @foreach($biodatas as $biodata)
-
-                <tr>
-                    <td><b>{{$biodata->id}}</b></td>
-                    <td>{{$biodata->first_name}}</td>
-                    <td>{{$biodata->last_name}}</td>
-                    <td><img src="{{URL::to('/')}}/images/{{$biodata->image}}" class="img-thumbnail" width="75" alt=""></td>
-                    <td>
-                        <form action="{{route('biodata.destroy',$biodata->id)}}" method="post">
-                            <a class="btn btn-warning" href="{{route('biodata.edit',$biodata->id)}}">edit</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
+                @isset($biodatas)
+                  @if($biodatas->count() > 0)
+                     @foreach($biodatas as $biodata)
+                            <tr>
+                                <td><b>{{$biodata->id}}</b></td>
+                                <td>{{$biodata->first_name}}</td>
+                                <td>{{$biodata->last_name}}</td>
+                                <td><img src="{{URL::to('/')}}/images/{{$biodata->image}}" class="img-thumbnail" width="75" alt=""></td>
+                                <td>
+                                    <form action="{{route('biodata.destroy',$biodata->id)}}" method="post">
+                                        <a class="btn btn-warning" href="{{route('biodata.edit',$biodata->id)}}">edit</a>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                     @endforeach
+                  @endif
+                @endisset
         </table>
-
+        @isset($biodatas)
         <div class="d-flex justify-content-center">
         {!! $biodatas->links('vendor.pagination.bootstrap-4') !!}
         </div>
-
+        @endisset
 
     </div>
 
