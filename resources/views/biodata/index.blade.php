@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
+
+@section('title','Show All User')
+
 @section('content')
 
     <div class="container mt-5">
 
         <div class="row">
             <div class="col-md-10">
-                <h3> List of Biodata</h3>
+                <h3> List of Bio data</h3>
             </div>
 
             <div class="col-sm-2">

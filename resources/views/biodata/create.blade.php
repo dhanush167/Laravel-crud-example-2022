@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
+@section('title','Create New User')
+
 @section('content')
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-12">
-                <h3>New Biodata </h3>
+                <h3>New Bio data </h3>
             </div>
         </div>
 
@@ -28,21 +30,8 @@
             @csrf
             @method('POST')
             <div class="row">
-                <div class="col-md-12">
-                    <strong>First Name</strong>
-                    <input type="text" name="first_name" class="form-control" placeholder="First Name">
-                </div>
 
-                <div class="col-md-12">
-                    <strong>Last Name</strong>
-                    <input type="text" name="last_name" class="form-control" placeholder="Last Name">
-                </div>
-
-
-                <div class="col-md-12 mt-3 mb-3">
-                    <label for="">Upload Image</label>
-                    <input type="file" name="image">
-                </div>
+                @include('biodata.form')
 
                 <div class="col-md-12">
                     <a href="{{route('biodata.index')}}" class="btn btn-sm btn-success"> Back</a>
