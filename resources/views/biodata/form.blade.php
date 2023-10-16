@@ -25,7 +25,7 @@
 </div>
 <div class="col-md-12 mt-3 mb-3">
     <label for="">Upload Image</label>
-    <input type="file"  name="image" required>
+    <input type="file"  name="image">
     @if($editing)
         <img src="{{URL::to('/')}}/images/{{$biodata->image}}" class="img-thumbnail" width="100" alt="">
         <input type="hidden" name="hidden_image" value="{{$biodata->image}}">
