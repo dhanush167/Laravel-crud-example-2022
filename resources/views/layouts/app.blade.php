@@ -6,14 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Crud Demo - @yield('title')</title>
     <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
-
 </head>
 <body>
-
-
-
     @yield('content')
-
-
 </body>
 </html>

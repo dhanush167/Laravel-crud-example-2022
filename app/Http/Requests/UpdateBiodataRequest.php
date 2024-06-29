@@ -28,12 +28,14 @@ class UpdateBiodataRequest extends FormRequest
             return [
                 'first_name' => 'required|max:255|string|min:3',
                 'last_name' => 'required|max:255|string|min:3',
-                'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+                'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048',
+                'date_of_birth'=>'required|date|after:11/01/1925',
             ];
         } else {
             return [
                 'first_name' => 'required|max:255|string|min:3',
                 'last_name' => 'required|max:255|string|min:3',
+                'date_of_birth'=>'required|date|after:11/01/1925',
             ];
         }
 
@@ -45,7 +47,7 @@ class UpdateBiodataRequest extends FormRequest
         return [
             'first_name.required' => 'First Name is required !',
             'last_name.required' => 'Last Name is required !',
-            'image.required' => 'Image is required !'
+            'image.required' => 'Image is required !',
         ];
     }
 

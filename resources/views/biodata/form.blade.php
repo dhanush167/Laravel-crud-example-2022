@@ -1,4 +1,15 @@
 @php $editing = isset($biodata) @endphp
+<div class="col-md-12 mt-3 mb-3">
+    <label for="">Upload Image</label>
+    <input type="file"  name="image">
+    @if($editing)
+        <img src="{{URL::to('/')}}/images/{{$biodata->image}}" class="img-thumbnail" width="100" alt="">
+        <input type="hidden" name="hidden_image" value="{{$biodata->image}}">
+    @endif
+    @if ($errors->has('image'))
+        <span class="text-danger">{{ $errors->first('image') }}</span>
+    @endif
+</div>
 <div class="col-md-12">
     <strong>First Name</strong>
     <input type="text"
@@ -25,25 +36,14 @@
         <span class="text-danger">{{ $errors->first('last_name') }}</span>
     @endif
 </div>
-<div class="col-md-12 mt-3 mb-3">
-    <label for="">Upload Image</label>
-    <input type="file"  name="image">
-    @if($editing)
-        <img src="{{URL::to('/')}}/images/{{$biodata->image}}" class="img-thumbnail" width="100" alt="">
-        <input type="hidden" name="hidden_image" value="{{$biodata->image}}">
-    @endif
-    @if ($errors->has('image'))
-        <span class="text-danger">{{ $errors->first('image') }}</span>
+<div class="col-md-12">
+    <strong>Birth Of Date</strong>
+    <input type="date"
+           value="{{old('date_of_birth', ($editing ? $biodata->date_of_birth : ''))}}"
+           name="date_of_birth"
+           class="form-control"
+           placeholder="Date Of Birth">
+    @if ($errors->has('date_of_birth'))
+        <span class="text-danger">{{ $errors->first('date_of_birth') }}</span>
     @endif
 </div>
-
-
-
-
-
-
-
-
-
-
-

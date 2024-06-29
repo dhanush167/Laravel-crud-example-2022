@@ -25,9 +25,10 @@ class StoreBiodataRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'=>'required|max:255|string|min:3',
-            'last_name'=>'required|max:255|string|min:3',
-            'image'=>'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+            'first_name' => 'required|max:255|string|min:3',
+            'last_name' => 'required|max:255|string|min:3',
+            'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048',
+            'date_of_birth' => 'required|date|after:11/01/1920',
         ];
     }
 
@@ -36,7 +37,8 @@ class StoreBiodataRequest extends FormRequest
         return [
             'first_name.required' => 'First Name is required !',
             'last_name.required' => 'Last Name is required !',
-            'image.required' => 'Image is required !'
+            'image.required' => 'Image is required !',
+            'age.required' => 'Age is required !'
         ];
     }
 
