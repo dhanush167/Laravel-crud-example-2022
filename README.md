@@ -14,7 +14,7 @@ php artisan vendor:publish --tag=laravel-pagination
 
 ```
 
-![crud](https://github.com/dhanush167/Laravel-crud-example-2022-update/assets/37043938/7d900276-0cb0-48b3-a7b6-038444d0ce08)
+![crud](public/screenshot/img.png)
 
 
 <hr>
@@ -23,7 +23,6 @@ php artisan vendor:publish --tag=laravel-pagination
 
 
 ```php
-
 <?php
 
 namespace App\Http\Requests;
@@ -51,9 +50,10 @@ class StoreBiodataRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'=>'required|max:255|string|min:3',
-            'last_name'=>'required|max:255|string|min:3',
-            'image'=>'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+            'first_name' => 'required|max:255|string|min:3',
+            'last_name' => 'required|max:255|string|min:3',
+            'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048',
+            'date_of_birth' => 'required|date|after:11/01/1920',
         ];
     }
 
@@ -62,7 +62,8 @@ class StoreBiodataRequest extends FormRequest
         return [
             'first_name.required' => 'First Name is required !',
             'last_name.required' => 'Last Name is required !',
-            'image.required' => 'Image is required !'
+            'image.required' => 'Image is required !',
+            'age.required' => 'Age is required !'
         ];
     }
 
@@ -86,6 +87,7 @@ class StoreBiodataRequest extends FormRequest
 <p>update method validation file</p>
 
 ```php
+
 <?php
 
 namespace App\Http\Requests;
@@ -116,12 +118,14 @@ class UpdateBiodataRequest extends FormRequest
             return [
                 'first_name' => 'required|max:255|string|min:3',
                 'last_name' => 'required|max:255|string|min:3',
-                'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048'
+                'image' => 'required|mimes:svg,jpeg,png,jpg|image|max:2048',
+                'date_of_birth'=>'required|date|after:11/01/1925',
             ];
         } else {
             return [
                 'first_name' => 'required|max:255|string|min:3',
                 'last_name' => 'required|max:255|string|min:3',
+                'date_of_birth'=>'required|date|after:11/01/1925',
             ];
         }
 
@@ -133,7 +137,7 @@ class UpdateBiodataRequest extends FormRequest
         return [
             'first_name.required' => 'First Name is required !',
             'last_name.required' => 'Last Name is required !',
-            'image.required' => 'Image is required !'
+            'image.required' => 'Image is required !',
         ];
     }
 
@@ -171,79 +175,59 @@ use Illuminate\Http\Request;
 
 class BiodataController extends Controller
 {
-
     public function index(BiodataService $data)
     {
-        return view('biodata.index',['biodatas'=>$data->show_all_biodata()]);
+        return view('biodata.index', ['biodatas' => $data->show_all_biodata()]);
     }
-
 
     public function create()
     {
-       return view('biodata.create');
+        return view('biodata.create');
     }
-
 
     public function store(StoreBiodataRequest $request, BiodataService $data)
     {
-
         $request->validated();
-
         $data->save_data_for_database(
-             $request->first_name,
-             $request->last_name,
-             $request->image,
+            $request->first_name,
+            $request->last_name,
+            $request->image,
+            $request->date_of_birth
         );
 
         return redirect()->route('biodata.index')
-            ->with('success','New Biodata created success full');
-
+            ->with('success', 'New biodata created successfully');
     }
-
-    public function show(Biodata $biodata)
-    {
-        //
-    }
-
 
     public function edit($id)
     {
-        return view('biodata.edit',['biodata'=>Biodata::find($id)]);
+        return view('biodata.edit', ['biodata' => Biodata::find($id)]);
     }
 
-
-    public function update(UpdateBiodataRequest $request,BiodataService $data,$id)
+    public function update(UpdateBiodataRequest $request, BiodataService $data, $id)
     {
-    
-        $request->validated();
-
-
         $data->edit_biodata(
             $request->hidden_image,
             $request->file('image'),
             $request->validated(),
             $request->first_name,
             $request->last_name,
-            $id,
+            $request->date_of_birth,
+            $id
         );
 
         return redirect()->route('biodata.index')
-            ->with('success', 'success fully update data');
-
+            ->with('success', 'Successfully update data');
     }
 
-
-    public function destroy(BiodataService $data,$id)
+    public function destroy(BiodataService $data, $id)
     {
-
         $data->biodata_destroy($id);
 
         return redirect()->route('biodata.index')
-            ->with('success','Bio data deleted');
+            ->with('success', 'Bio data deleted');
     }
 }
-
-
 
 ```
 
@@ -257,91 +241,192 @@ app/Services/BiodataService.php
 
 namespace App\Services;
 
+use App\Http\Traits\AgeCategory;
 use App\Models\Biodata;
+use Carbon\Carbon;
 
 class BiodataService
 {
-      public function show_all_biodata()
-      {
-          $biodatas = Biodata::latest()->paginate(5);
-          return $biodatas;
-      }
+    use AgeCategory;
 
-      public function save_data_for_database(
-          $first_name,
-          $last_name,$image
-      )
-      {
+    private $Infant;
+    private $Toddler;
+    private $Preschooler;
+    private $Child;
+    private $Teenager_or_Adolescent;
+    private $Young_adult;
+    private $Middle_aged_adult;
+    private $Senior_citizen_Elderly;
 
-          $image_name=rand().'.'.$image->getClientOriginalExtension();
+    public function __construct(
+        int $Infant,
+        int $Toddler,
+        int $Preschooler,
+        int $Child,
+        int $Teenager_or_Adolescent,
+        int $Young_adult,
+        int $Middle_aged_adult,
+        int $Senior_citizen_Elderly
+    )
+    {
+        $this->Infant = $Infant;
+        $this->Toddler = $Toddler;
+        $this->Preschooler = $Preschooler;
+        $this->Child = $Child;
+        $this->Teenager_or_Adolescent = $Teenager_or_Adolescent;
+        $this->Young_adult = $Young_adult;
+        $this->Middle_aged_adult = $Middle_aged_adult;
+        $this->Senior_citizen_Elderly = $Senior_citizen_Elderly;
+    }
 
-          $image->move(public_path('images'),$image_name);
+    public function show_all_biodata()
+    {
+        $biodatas = Biodata::latest()->paginate(5);
+        return $biodatas;
+    }
 
+    public function save_data_for_database(
+        $first_name,
+        $last_name,
+        $image,
+        $date_of_birth
+    )
+    {
+        $dateOfBirth = Carbon::parse($date_of_birth);
+        $age = $dateOfBirth->age;
+        $category = $this->age_limit_and_category(
+            $this->Infant,
+            $this->Toddler,
+            $this->Preschooler,
+            $this->Child,
+            $this->Teenager_or_Adolescent,
+            $this->Young_adult,
+            $this->Middle_aged_adult,
+            $this->Senior_citizen_Elderly,
+            $age
+        );
 
-          $form_data = $this->form_array($first_name,$last_name,$image_name);
+        $image_name = rand() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('images'), $image_name);
 
-          Biodata::create($form_data);
+        $form_data = $this->form_array($first_name, $last_name, $image_name, $age, $category, $date_of_birth);
 
-      }
+        Biodata::create($form_data);
+    }
 
-      public function edit_biodata(
-          $hiddenimage,
-          $image_file,
-          $validation,
-          $first_name,
-          $last_name,
-          $id
-          )
-      {
+    public function edit_biodata(
+        $hiddenimage,
+        $image_file,
+        $validation,
+        $first_name,
+        $last_name,
+        $date_of_birth,
+        $id
+    )
+    {
+        $image_name = $hiddenimage;
+        $image = $image_file;
 
-          $image_name = $hiddenimage;
-          $image = $image_file;
+        if ($image != '') {
+            $validation;
+            $image_name = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $image_name);
+        } else {
+            $validation;
+        }
 
-          if ($image != '') {
+        $dateOfBirth = Carbon::parse($date_of_birth);
+        $age = $dateOfBirth->age;
+        $category = $this->age_limit_and_category(
+            $this->Infant,
+            $this->Toddler,
+            $this->Preschooler,
+            $this->Child,
+            $this->Teenager_or_Adolescent,
+            $this->Young_adult,
+            $this->Middle_aged_adult,
+            $this->Senior_citizen_Elderly,
+            $age
+        );
 
-              $validation;
+        $form_data = $this->form_array($first_name, $last_name, $image_name, $age, $category, $date_of_birth);
 
-              $image_name = rand() . '.' . $image->getClientOriginalExtension();
-              $image->move(public_path('images'), $image_name);
+        Biodata::whereId($id)->update($form_data);
+    }
 
-          } else {
-
-              $validation;
-
-          }
-
-          $form_data = $this->form_array($first_name,$last_name,$image_name);
-
-          Biodata::whereId($id)->update($form_data);
-
-
-      }
-
-     public function biodata_destroy($id)
-     {
-         $biodata=Biodata::find($id);
-         $biodata->delete();
-     }
+    public function biodata_destroy($id)
+    {
+        $biodata = Biodata::find($id);
+        $biodata->delete();
+    }
 
     private function form_array(
         $first_name,
         $last_name,
-        $image_name
+        $image_name,
+        $age,
+        $category,
+        $date_of_birth
     )
     {
         $form_data = array(
             'first_name' => $first_name,
             'last_name' => $last_name,
-            'image' => $image_name
+            'image' => $image_name,
+            'age' => $age,
+            'category' => $category,
+            'date_of_birth' => Carbon::parse($date_of_birth)->toDateString(),
         );
 
         return $form_data;
     }
-
-
 }
-
 
 ```
 
+<p>AppServiceProvider.php</p>
 
+```php
+
+<?php
+
+namespace App\Providers;
+
+use App\Services\BiodataService;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->app->bind(BiodataService::class,function ($app){
+            return new BiodataService(
+                config('custom.infant'),
+                config('custom.toddler'),
+                config('custom.preschooler'),
+                config('custom.child'),
+                config('custom.teenager_or_adolescent'),
+                config('custom.young_adult'),
+                config('custom.middle_aged_adult'),
+                config('custom.senior_citizen_elderly')
+            );
+        });
+    }
+}
+
+```
