@@ -14,7 +14,7 @@ php artisan vendor:publish --tag=laravel-pagination
 
 ```
 
-![crud](public/screenshot/img.png)
+![img](https://github.com/dhanush167/Laravel-crud-example-2022/assets/37043938/2d4a0474-827e-40a1-b109-e1e3d6a2f7ed)
 
 
 <hr>
