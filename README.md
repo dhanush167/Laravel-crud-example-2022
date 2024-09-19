@@ -1,9 +1,13 @@
 
 ##  Laravel crud example
-```
 
+![Project Complete](https://img.shields.io/badge/Status-Project%20Complete-brightgreen)
+
+
+
+
+```
  php artisan make:model Biodata --all
- 
 ```
 
 <p>pagination generate</p>
